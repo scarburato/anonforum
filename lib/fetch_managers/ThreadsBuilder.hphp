@@ -1,0 +1,17 @@
+<?php
+
+
+class ThreadsBuilder
+{
+    /* private */const _QUERY_THREADS = "
+SELECT 
+    T.`id`,
+    T.`is pinned`,
+    T.`timestamp`,
+    T.`title`,
+    substr(T.`content`,0, 100) AS `content preview`
+FROM Thread T
+WHERE T.`section` = ?
+-- Ordine cronologico, prima quelli in evidenza
+ORDER BY T.`is pinned` IS TRUE, T.`timestamp` ASC";
+}

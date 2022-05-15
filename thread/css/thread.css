@@ -1,0 +1,117 @@
+#post {
+    padding: 20px;
+    background-color: lightgoldenrodyellow;
+    min-height: 10em;
+}
+
+
+/*********************************************************************
+                SEZIONE RISPOSTE
+ *********************************************************************/
+#replies-master
+{
+    background-color: #e5e8eb;
+
+    padding-top: 20px;
+}
+
+.replies-info {
+    margin: 5px 30px;
+    text-align: center;
+    font-size: large;
+    font-family: "Ubuntu Mono", monospace;
+}
+
+.replies .more{
+    padding-left: 16px;
+}
+
+.reply-content .card-content
+{
+    padding: 1em;
+}
+
+.replies
+{
+    overflow: hidden;
+    position: relative;
+    padding-left: 20px;
+}
+
+.replies .line-master
+{
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: #c3c3c3;
+}
+
+.replies .line-slave
+{
+    float: left;
+    width: 100%
+}
+
+#replies-master .card-header
+{
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 32px;
+}
+
+.info-header {
+    cursor: default;
+}
+
+.info-header .author
+{
+    display: inline-block;
+    background-color: dodgerblue;
+    color: white;
+
+    font-family: "Ubuntu Mono", monospace;
+
+    border-radius: calc(64px / 2);
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.info-header .info, .info-header .info p{
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.info-header .mod-tools{
+    display: inline-block;
+}
+
+.info-header .info span {
+    padding-left: 10px;
+}
+
+.reply-id span {
+    padding-left: 0 !important;
+}
+
+
+/*****************************************************************************
+                FINESTRA PER LA COMPOSIZIONE DI UNA RISPOSTA
+ */
+#compose-window-form p
+{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#compose-window-form textarea
+{
+    max-width: calc(100% - 1px);
+    width: calc(100% - 1px);
+    resize: vertical;
+}
+
+.box {
+    padding: 5px;
+    margin: 5px;
+    border: double;
+}

@@ -1,0 +1,106 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dario
+ * Date: 31/01/18
+ * Time: 15.19
+ */
+
+namespace mysqli_wrapper;
+
+use mysqli_result;
+use mysqli_sql_exception;
+
+/**
+ * Class mysqli
+ * Una classe per gestire la connessione alla base di dati
+ * @package mysqli_wrapper
+ */
+class mysqli extends \mysqli
+{
+    public function __construct(
+        $host = DBMS_HOST,
+        $username = DBMS_USER,
+        $passwd = DBMS_PASSWD,
+        $dbname = DBMS_DATABASE,
+        $port = DBMS_PORT,
+        $socket = DBMS_SOCKET )
+    {
+        parent::__construct($host, $username, $passwd, $dbname, $port, $socket);
+
+        // Errori di connessione ?
+        if($this->connect_errno)
+            throw new mysqli_connection_error($this->connect_error, $this->connect_errno);
+
+        // Modalità UTF-8
+        if(parent::set_charset("utf8") === false)
+            throw new sql_exception($this->error_list, $this->errno);
+
+        // Ora zulù
+        if(parent::query("SET time_zone = \"+00:00\";") === false)
+            throw new sql_exception($this->error_list, $this->errno);
+    }
+
+    public function __destruct()
+    {
+        if(parent::close() === false)
+            throw new sql_exception($this->error_list, $this->errno);
+    }
+
+    /**
+     * @param string $query
+     * @param int $resultmode
+     * @return bool|mysqli_result
+     */
+    public function query($query, $resultmode = MYSQLI_STORE_RESULT)
+    {
+        $result = parent::query($query, $resultmode);
+
+        if($result === false)
+            throw new sql_exception($this->error_list, $this->errno);
+
+        return $result;
+    }
+
+    /**
+     * @param string $query
+     * @param bool $store
+     * @return mysqli_stmt
+     */
+    public function prepare($query, $store = true)
+    {
+        return new mysqli_stmt($this, $query, $store);
+    }
+
+    /**
+     * Interroga il server MySQL sul suo timestamp. Se al server
+     * non è stata reimpostato il fuso orario ritorna l'ora Zulù (UTC)
+     * @return string|null
+     */
+    public function dbms_timestamp($append_zulu = true)
+    {
+        return $this->query( "SELECT CURRENT_TIMESTAMP()")->fetch_array()[0] . ($append_zulu ? 'Z' : '');
+    }
+
+    /**
+     * This function returns all possible values of an enum into an array
+     * Probably not so fast
+     * @author https://stackoverflow.com/a/11429272
+     * @param string $table
+     * @param string $field
+     * @return array
+     * @throws mysqli_sql_exception
+     */
+    public function enum_values($table, $field)
+    {
+        $result = $this->query( "SHOW COLUMNS FROM {$table} WHERE Field = '{$field}'" );
+
+        if($result === false)
+            throw new sql_exception($this->error_list, $this->errno);
+
+        $type = $result->fetch_assoc()["Type"];
+
+        preg_match("/^enum\(\'(.*)\'\)$/", $type, $matches);
+        return explode("','", $matches[1]);
+    }
+}

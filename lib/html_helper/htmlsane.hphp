@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Purifica una stringa di testo per essere inserita come testo in HTML5
+ * @param $unsanitized_string
+ * @return string
+ */
+function toHTMLText($unsanitized_string)
+{
+    //$san = filter_var($unsanitized_string, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_ENCODE_HIGH);
+
+    $san = htmlspecialchars($unsanitized_string, ENT_HTML5, "UTF-8");
+    if (! is_string($san))
+        throw new RuntimeException("Impossibile sanatificare questa stringa", -1);
+
+    return $san;
+}
+
+function toQueryParameter ($unsanitized_string)
+{
+    return(urlencode(utf8_encode($unsanitized_string)));
+}

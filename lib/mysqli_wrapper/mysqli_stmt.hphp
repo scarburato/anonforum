@@ -1,0 +1,68 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dario
+ * Date: 01/02/18
+ * Time: 18.07
+ */
+
+namespace mysqli_wrapper;
+
+// use mysqli;
+
+/**
+ * Class mysqli_stmt
+ * Una classe per gestire le interrogazioni alla base di dati
+ * @package mysqli_wrapper
+ */
+class mysqli_stmt extends \mysqli_stmt
+{
+    private $store = true;
+
+    /**
+     * MySqliStmWrapper constructor.
+     * @see mysqli_stmt
+     * @param mysqli $link
+     * @param string $query
+     * @param bool $store = true
+     */
+    public function __construct(mysqli $link, $query, $store = true)
+    {
+        parent::__construct($link, $query);
+
+        $this->store = $store;
+    }
+
+    public function __destruct()
+    {
+        if($this->store === true)
+            parent::free_result();
+
+        //if(parent::close() === false)
+          //  ;
+            //throw new sql_exception([$this->error], $this->errno);
+    }
+
+    /**
+     * @see mysqli_stmt::execute()
+     * Questa versione di execute lancia un eccezzione se qualcosa è andato storto
+     * @return bool
+     * @throws sql_exception
+     */
+    public function execute()
+    {
+        $success = parent::execute();
+
+        if($success === false)
+            throw new sql_exception($this->error_list, $this->errno);
+
+        // Se devo salvare il result set AND ò fallito a salvarlo
+        if($this->store === true && !parent::store_result() )
+            throw new sql_exception($this->error_list, $this->errno);
+
+        return true;
+    }
+
+    public function store_result() {}
+    public function free_result() {}
+}

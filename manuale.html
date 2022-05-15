@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>📗 Manuale d'uso</title>
+    <style>
+        dt {
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .inInglese {
+            margin-left: 5px;
+            font-size: small;
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        dd {
+            margin-bottom: 1em;
+        }
+        table {
+            width: 100%;
+            border: solid 1px black;
+        }
+
+        td,th {
+            border: solid 1px black;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .yes{
+            content: "SÌ";
+            color: green;
+            background-color: #dcffd5;
+        }
+
+        .no {
+            content: "NO";
+            color: darkred;
+            background-color: rgba(255, 128, 128, 0.51);
+        }
+        .infoAuth {
+            font-family: monospace;
+        }
+
+        .author {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>📗 Guida all'uso del forum</h1>
+<h2>📑 Glossario</h2>
+<dl>
+    <dt>Sezione</dt>
+    <dt class="inInglese">Section</dt>
+    <dd>
+        Un’area tematica della piattaforma dedicata a discutere di un certo argomento. Es. una sezione chiamata
+        “Ricette” è dedicata a scambiarsi consigli e ricette di cucina.
+    </dd>
+
+    <dt>Discussione</dt>
+    <dt class="inInglese">Thread</dt>
+    <dd>
+        È una pagina su dove si discute specificatamente di un argomento (<i>topic</i>).
+        È avviata da un utente che gli dà un titolo e un contentuo.
+    </dd>
+
+    <dt>Risposta</dt>
+    <dt class="inInglese">Reply</dt>
+    <dt class="inInglese">Comment</dt>
+    <dd>
+        È un testo scritto da un’utente che può essere a risposta diretta all’argomento scritto dall’autore ovvero una
+        risposta ad un’altra risposta
+    </dd>
+</dl>
+
+<h2>🧗 Utenti finali</h2>
+<p>
+    Quando un utente accede alla piattaforma può scorrere le sezioni
+    disponibili sul sito e, per ogni una di essa, scorrere le discussioni
+    in corso ovvero avviarne una nuova.
+</p>
+<p>
+    All’interno di una discussione sono presenti dei commenti
+    scritti dagli altri utenti, lo stesso utente può pubblicare –
+    senza necessità di alcun tipo di autenticazione – un nuovo
+    commento.
+    È possibile riconoscere gli autori dei commenti all’interno di una
+    discussione da un identificativo alfanumerico univoco alla discussione e da
+    un colore a 24 bit anche esso casuale ma non necessariamente univoco.
+</p>
+<p>
+    Il testo di un commento può essere formato dall'autore usando un linguaggio di markup chiamato
+    <a href="https://en.wikipedia.org/wiki/BBCode">BBCode</a>. Ad esempio una scrittura del tipo
+    <code>[b]a b c[/b]</code> produrrà un commento contenente <code><strong>a b c</strong></code>.
+</p>
+<p>
+    Un commento ha delle proprietà associate visualizzabili dagli altri utenti per
+    mezzo di simboli applicati nella sua intestazione:
+</p>
+<dl>
+    <dt title="He's the author!">🎤 Simbolo del microfono</dt>
+    <dd>L'autore del commento è anche l'autore della discussione</dd>
+
+    <dt title="Probably from you">👤 Simbolo di un capo</dt>
+    <dd>
+        L'autore del commento sta usando lo stesso indirizzo di rete IPv4 ovvero IPv6 della propria connessione.<br>
+        È possibile che sia un proprio commento altrimenti, se si sta visitando il sito da una rete sotto NAT/PAT,
+        che sia un'altro utente sulla medesima rete
+    </dd>
+
+    <dt title="This comment is locked, you can't reply anymore">🔒 Simbolo del lucchetto</dt>
+    <dd>
+        Il commento ovvero l'intera discussione è stato bloccato da un moderatore. Non è più possibile rispondere.<br>
+        Se si tratta di un blocco su un commento, non è detto che tale condizione sia ereditata anche dai figli
+    </dd>
+
+    <dt title="The author was banned!" hidden>
+        <img style="height: 1em" src="./asset/ban%20hammer.png" alt="B">
+        Simbolo del martello
+    </dt>
+    <dd>L'autore è stato bandito! Esso non può più rispondere in questa discussione, sezione ovvero intero sito</dd>
+</dl>
+<!--<p>
+    Le discussioni hanno un tempo di vita limitato, dopo un certo
+    tempo le discussioni vengono automaticamente eliminate per liberare spazio di
+    archiviazione sul servente che ospita la base di dati.
+</p>-->
+<h2>👮 Amministrator</h2>
+<p>
+    Gli amministratori si dividono in sotto categorie in base al loro
+    livello di privilegi.
+</p>
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th>Super Utente <i>(root)</i></th>
+        <th><i>section_administrator</i></th>
+        <th><i>section_moderator</i></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th>Rimuovere commenti ovvero discussioni</th>
+        <td class="yes">SÌ</td>
+        <td class="yes">SÌ</td>
+        <td class="yes">SÌ</td>
+
+    </tr>
+    <tr>
+        <th>Bandire utenti in una discussione</th>
+        <td class="yes">SÌ</td>
+        <td class="yes">SÌ</td>
+        <td class="yes">SÌ</td>
+
+    </tr>
+    <tr>
+        <th>Bandire utenti da una sezione</th>
+        <td class="yes">SÌ</td>
+        <td class="yes">SÌ</td>
+        <td class="no">NO</td>
+
+    </tr>
+    <tr>
+        <th>Bandire utenti dall'intero sito</th>
+        <td class="yes">SÌ</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+
+    </tr>
+    <tr>
+        <th>Appuntare in testa ad una sezione delle discussioni</th>
+        <td class="yes">SÌ</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+
+    </tr>
+    <tr>
+        <th>Creare ovvero rimuovere sezioni</th>
+        <td class="yes">SÌ</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+
+    </tr>
+    <tr>
+        <th>Creare, eliminare ovvero modificare amministratori</th>
+        <td class="yes">SÌ</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+
+    </tr>
+
+    </tbody>
+</table>
+<p>
+    Gli amministratori necessitano di autenticarsi con un nome utente ed una parola d’ordine per accedere a queste
+    funzionalità.
+</p>
+</body>
+<h1>🐛 Sviluppo</h1>
+<h2>🔐 Accesso</h2>
+<p>Per accedere alla piattaforma come amministratori di varie categorie sono già presenti degli utenti</p>
+<table>
+    <thead>
+    <tr>
+        <th>Livello di privilegio</th>
+        <th>Nome utente</th>
+        <th>Parola d'ordine</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>root</td>
+        <td class="infoAuth">root</td>
+        <td class="infoAuth">toor</td>
+
+    </tr>
+    <tr>
+        <td>section_administrator</td>
+        <td class="infoAuth">pippo</td>
+        <td class="infoAuth">pippo</td>
+
+    </tr>
+    <tr>
+        <td>section_moderator</td>
+        <td class="infoAuth">paperino</td>
+        <td class="infoAuth">paperino</td>
+    </tr>
+    </tbody>
+</table>
+<h2>🤖 Auto replicatore</h2>
+<p>
+    Premendo il collegamento presente in fondo ad ogni pagina, è possibile abilitare un evento periodico sul DBMS
+    che preleva un <em>commento</em> qualsasi nella base di dati, il cui autore ha indirizzo di rete IPv4
+    <code>127.0.0.1</code> ovvero indirizzo di rete IPv6 <code>::1</code>; simula una risposta di un utente che ha
+    indirizzo di rete <code>127.1.1.101</code> e il cui codice sarà sempre <span class="author">autoREP </span>.
+</p>
+<p>
+    Premendo sul collegamento a fianco ad esso è possibile disabilitarlo
+</p>
+</html>

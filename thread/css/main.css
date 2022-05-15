@@ -1,0 +1,35 @@
+@import "./thread.css";
+@import "editor.css";
+@import "compose.css";
+
+#mod_links {
+    padding: 10px 20px;
+    margin: 5px;
+    border: double ;
+    background-color: #dcffd5;
+}
+
+#mod_links ul {
+    columns: 3;
+}
+
+
+#user_locked {
+    padding: 10px 20px;
+    margin: 5px;
+    border: double ;
+    background-color: #FF8080;
+}
+
+#user_locked img{
+    width: 50px;
+}
+
+#user_locked p {
+    margin-left: 20px;
+}
+
+#user_locked *{
+    display: inline;
+    vertical-align: middle
+}

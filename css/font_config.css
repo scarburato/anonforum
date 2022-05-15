@@ -1,0 +1,19 @@
+/* Ubuntu da Google */
+@import url('https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu+Condensed|Ubuntu+Mono&display=swap');
+
+/* Ubuntu da locale */
+
+
+/* Attivare i caratteri */
+* {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+code, pre {
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+h1, h2 {
+    font-variant: small-caps;
+}
+

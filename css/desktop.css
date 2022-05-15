@@ -1,0 +1,47 @@
+#sections_list {
+    width: 20%;
+    float: left;
+}
+
+#main {
+    width: 80%;
+    float: left;
+}
+
+#head-title-container {
+    display: block;
+    padding: 10px;
+}
+
+#title {
+    width: 50%;
+}
+
+#head-buttons {
+    float: right;
+}
+
+#content {
+    width: 28cm;
+    padding-left: calc((100% - 28cm) / 2);
+    padding-right: calc((100% - 28cm) / 2);
+    /*margin-left: calc( 50% - 14cm );*/
+
+    padding-bottom: 5px;
+}
+
+/*#main_sections{
+    columns: 3;
+}*/
+
+#main_sections li:nth-child(3n+1) {
+    clear: left;
+}
+
+#main_sections li{
+    width: calc(100% / 3);
+    float: left;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}

@@ -1,0 +1,143 @@
+<?php
+
+/**
+ * Class Auth
+ * Questa classe aiuta a gestire i privilegi degli utenti collegati al servizio.
+ * <strong>Attenzione:</strong> una sola istanza della classe dovrebbe esistere durante
+ * l'eseguzione di uno programmma PHP!
+ */
+namespace Auth;
+use mysqli_wrapper\mysqli;
+use RuntimeException;
+const LEVEL_GUEST  = 0x01;
+
+const LEVEL_ADMIN               = 0xFFE;
+const LEVEL_UNKNOWN             = 0b00000000010;
+const LEVEL_REMOVE_REPLY        = 0b10000000100;
+const LEVEL_LOCK_REPLY          = 0b10000000000;
+const LEVEL_BAN_USER_THREAD     = 0b00000001000;
+const LEVEL_BAN_USER_SECTION    = 0b00000010000;
+const LEVEL_BAN_USER_SITE       = 0b00000100000;
+const LEVEL_PIN_THREAD          = 0b00001000000;
+const LEVEL_SET_THREAD_EXPIRE   = 0b00010000000;
+const LEVEL_EDIT_SECTION        = 0b00100000000;
+const LEVEL_USER_EDIT           = 0b01000000000;
+
+class Auth
+{
+    public function __construct()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE)
+            throw new RuntimeException("Session is not initialised!", -1);
+
+        if(!isset($_SESSION["auth_level"]))
+            $_SESSION["auth_level"] = LEVEL_GUEST;
+    }
+
+    public function set_user_id($id)
+    {
+        $_SESSION["auth_id"] = $id;
+    }
+
+    public function get_user_id()
+    {
+        return $_SESSION["auth_id"];
+    }
+
+    public function exit_user()
+    {
+        $_SESSION["auth_id"] = null;
+        $_SESSION["auth_level"] = LEVEL_GUEST;
+    }
+
+    /**
+     * Controlla se è un admin nella sezione
+     * @param $mysql_link mysqli
+     * @param $section string
+     * @return bool
+     */
+    function is_admin_section_from_thread($mysql_link, $thread)
+    {
+        /* Può il moderatore, amministrare questo thread ?*/
+        $moderator_enabled = $this->has_privilege(LEVEL_EDIT_SECTION);
+        if( !$moderator_enabled && $this->has_privilege(LEVEL_ADMIN) )
+        {
+            $stm = $mysql_link->prepare("
+SELECT EXISTS(
+    SELECT 1 
+    FROM Moderator M 
+        INNER JOIN Thread T ON M.section = T.section
+    WHERE M.administrator = A.username AND T.id = ?
+) AS `act` FROM Administrator A WHERE A.username = ?");
+            $stm->bind_param("ss", $thread,$this->get_user_id());
+            $stm->bind_result($moderator_enabled);
+            $stm->execute(); $stm->fetch(); $stm->close();
+        }
+
+        return $moderator_enabled;
+    }
+
+    /**
+     * Controlla se è un admin nella sezione
+     * @param $mysql_link mysqli
+     * @param $section string
+     * @return bool
+     */
+    function is_admin_section($mysql_link, $section)
+    {
+        /* Può il moderatore, amministrare questo thread ?*/
+        $moderator_enabled = $this->has_privilege(LEVEL_EDIT_SECTION);
+        if( !$moderator_enabled && $this->has_privilege(LEVEL_ADMIN) )
+        {
+            $stm = $mysql_link->prepare("
+SELECT EXISTS(
+    SELECT 1 FROM Moderator M WHERE M.administrator = A.username AND M.section = ?
+) AS `act` FROM Administrator A WHERE A.username = ?");
+            $stm->bind_param("ss", $section,$this->get_user_id());
+            $stm->bind_result($moderator_enabled);
+            $stm->execute(); $stm->fetch(); $stm->close();
+        }
+
+        return $moderator_enabled;
+    }
+
+    public function sync_privileges_from_db($level)
+    {
+        switch ($level)
+        {
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case "root":
+                $this->add_privilege(LEVEL_USER_EDIT);
+                $this->add_privilege(LEVEL_BAN_USER_SITE);
+                $this->add_privilege(LEVEL_EDIT_SECTION);
+            case "section_administrator":
+                $this->add_privilege(LEVEL_BAN_USER_SECTION);
+                $this->add_privilege(LEVEL_PIN_THREAD);
+                //$this->add_privilege(LEVEL_SET_THREAD_EXPIRE);
+            case "section_moderator":
+                $this->add_privilege(LEVEL_REMOVE_REPLY);
+                $this->add_privilege(LEVEL_BAN_USER_THREAD);
+                break;
+            default:
+                $this->add_privilege(LEVEL_UNKNOWN);
+        }
+    }
+
+    private function add_privilege($privilige)
+    {
+        $_SESSION["auth_level"] = $_SESSION["auth_level"] | $privilige;
+    }
+
+    public function remove_privilege($privilige)
+    {
+        $_SESSION["auth_level"] = $_SESSION["auth_level"] & (~$privilige);
+
+        if($_SESSION["auth_level"] === 0)
+            $_SESSION["auth_level"] = LEVEL_GUEST;
+    }
+
+    public function has_privilege($privilige)
+    {
+        return ($_SESSION["auth_level"] & $privilige) !== 0;
+    }
+}

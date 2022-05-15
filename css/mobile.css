@@ -1,0 +1,11 @@
+p {
+    /**font-size: x-large;**/
+}
+
+#notificationButton{
+    display: none;
+}
+
+#sections_list {
+    display: none;
+}

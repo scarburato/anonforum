@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * Class RepliesBuilder
+ * Questa classe si occuppa di gestire le interrogazioni alla base di dati
+ * per quanto riguarda la costruzione di un albero di commenti sotto un thread.
+ *
+ * L'albero può essere costruito a partire dal thread ovvero usare come radice
+ * un altro commento.
+ *
+ * Inoltre supporta la paginazione. Utile per quando c'è una quantità enorme di commenti
+ */
+class RepliesBuilder
+{
+    // Parte statica
+    /* private */const _QUERY_COMMENTS = "
+SELECT 
+    R.`id` AS `comment id`,
+    R.`content` AS `content`,
+       
+    R.`timestamp` AS `timestamp`,
+       
+    -- À figli ?
+    (
+        SELECT COUNT(*) 
+        FROM Reply RR
+        WHERE RR.`replies` = R.`id`
+    ) AS `number of childs`,
+       
+    R.`is locked` OR T.`is locked` AS `is locked`,
+       
+    -- Informazioni sull'autore
+    R.`author` AS `author`,                             -- L'id dell'autore
+    CONCAT('#', HEX(P.`anon color`)) AS `color hex`,    -- Il colore assegnato in HEX
+    P.`is op` AS `is op`,                               -- È l'autore del thread? 
+    P.`inet address` = inet6_aton(?) AS `is you`, -- Sei te?
+    P.blocked OR EXISTS(
+        SELECT 1 FROM `Banned poster in section` BPS WHERE BPS.`poster adress` = P.`inet address` AND BPS.section = T.id 
+    ) OR EXISTS(
+        SELECT 1 FROM `Banned poster in site` BPS WHERE BPS.`poster adress` = P.`inet address`
+    ) AS `banned` -- È bandito ?
+FROM Reply R 
+    INNER JOIN Thread T ON R.thread = T.id
+    LEFT JOIN Poster `P` ON R.`thread` = `P`.`thread` AND R.`author` = P.`anon id`
+WHERE 
+    R.`thread` = ? AND -- Il Thread
+    IF(? IS NULL, R.`replies` IS NULL, R.`replies` = ?) AND -- La risposta
+    1 -- Quando è stato scritto
+ORDER BY R.`timestamp` ASC
+LIMIT ?";
+
+    private $query_comments;
+
+    private $server, $thread, $root, $page, $depth;
+
+    private $handler = null;
+    private $replies = [];
+
+    // Variabili d'appoggio per come gestisce i param. per rif. il PhP
+    private $COMMENTS_CARDINALITY_ROOT = COMMENTS_CARDINALITY_ROOT;
+    private $COMMENTS_CARDINALITY_NESTED = COMMENTS_CARDINALITY_NESTED;
+
+    /**
+     * RepliesBuilder constructor.
+     * @param \mysqli_wrapper\mysqli $server    Deve essere una connessione ad una base di dati. Nessuna
+     *                          altra operazione deve essere pendente su di essa!
+     * @param int $thread       La chiave del thread!
+     * @param int $root         La chiave, se serve, del commento da usare come radice altrimenti
+     *                          null se si intende usare il thread stesso come radice
+     * @param int $depth        Quanta ricorsione devo fare?
+     */
+    public function __construct($server, $thread, $root = null, $depth = COMMENTS_DEF_DEPTH)
+    {
+        $this->server = $server;
+        $this->thread = $thread;
+        $this->depth = $depth - 1;
+        $this->root = $root;
+
+        $this->query_comments = $this->server->prepare(self::_QUERY_COMMENTS, false);
+    }
+
+    public function __destruct()
+    {
+        $this->query_comments->close();
+    }
+
+    /**
+     * @return array
+     */
+    public function fetch()
+    {
+        $this->query_comments->bind_param(
+            "siiii",
+            $_SERVER['REMOTE_ADDR'],
+            $this->thread , // R.`thread` = ?
+            $this->root, // Switch root
+            $this->root, // Controllo se è lui
+            $this->COMMENTS_CARDINALITY_ROOT // Limite di pagina
+        );
+
+        $this->query_comments->execute();
+        $root_comments = $this->query_comments->get_result();
+
+        // Per ogni figlio lo spingo nel vettore. Se non c'è nulla vettore vuoto
+        while($root_comment = $root_comments->fetch_array(MYSQLI_ASSOC))
+        {
+            $root_comment["sons"] = $this->_fetch($root_comment["comment id"], $this->depth - 1);
+            array_push($this->replies, $root_comment);
+        }
+
+        return [
+            "page" => $this->page,
+            "root" => $this->replies];
+    }
+
+    /**
+     * @param $root
+     * @param $depth
+     * @return array
+     */
+    private function _fetch($root, $depth)
+    {
+        if($depth <= 0)
+            return [];
+
+        // Vettore delle risposte
+        $replies = [];
+
+        $this->query_comments->bind_param(
+            "siiii",
+            $_SERVER['REMOTE_ADDR'],
+            $this->thread , // R.`thread` = ?
+            $root, // Switch root
+            $root, // Controllo se è lui
+            $this->COMMENTS_CARDINALITY_NESTED // Limite di pagina
+        );
+
+        $this->query_comments->execute();
+        $comments = $this->query_comments->get_result();
+
+        // Per ogni figlio lo spingo nel vettore. Se non c'è nulla vettore vuoto
+        while($comment = $comments->fetch_array(MYSQLI_ASSOC))
+        {
+            $comment["sons"] = $this->_fetch($comment["comment id"], $depth - 1);
+            array_push($replies, $comment);
+        }
+
+        return $replies;
+    }
+}

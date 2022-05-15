@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Prende un URL, e un vettore di parametri GET e ne genera un URL con quei parametri
+ * @param $url
+ * @param array $get_query
+ * @return string
+ */
+function urlbuild($url, array  $get_query)
+{
+    return $url . '?' . http_build_query($get_query);
+}

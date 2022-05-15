@@ -1,0 +1,11 @@
+header {
+    display: none;
+}
+
+aside {
+    display: none;
+}
+
+button, .button {
+    display: none;
+}

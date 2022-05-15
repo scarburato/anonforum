@@ -1,0 +1,12 @@
+#style_b {font-weight: bold} #style_i {font-style: italic} #style_u {text-decoration: underline}
+
+#controls .editor_control{
+    font-family: "Ubuntu Mono", monospace;
+}
+#controls span{
+    border-right: solid grey 1px;
+}
+
+#controls span:last-child{
+    border-right: none;
+}

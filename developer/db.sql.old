@@ -1,0 +1,95 @@
+DROP DATABASE IF EXISTS `Pagani_585281`;
+
+CREATE DATABASE `Pagani_585281` CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `Pagani_585281`;
+
+-- Le sezioni del forum
+CREATE TABLE `Section` (
+    `name`                  CHAR(32) PRIMARY KEY,
+
+    `short description`     VARCHAR(256) NOT NULL, -- È usata per i motori di ricerca e per la pagina principale
+    `main description`      TEXT NOT NULL -- Appare nella testata della pagina della sezione
+);
+
+-- Le regole impostate dai moderatori in una sezione
+CREATE TABLE `Rules` (
+    `section`               CHAR(32) NOT NULL,
+    `rule`                  VARCHAR(256) NOT NULL,
+
+    FOREIGN KEY (`section`) REFERENCES Section(name)
+);
+
+CREATE TABLE `Post` (
+    `thread`        BIGINT UNSIGNED NOT NULL,
+
+    `id`            INT UNSIGNED PRIMARY KEY  AUTO_INCREMENT,
+    `replies`       INT UNSIGNED DEFAULT  NULL,
+
+    `body`          TEXT NOT NULL,
+
+    FOREIGN KEY (replies) REFERENCES  Post(id)
+);
+
+CREATE TABLE `AnonUser` (
+    `net address`   INT UNSIGNED DEFAULT 0 NOT NULL COMMENT 'Only IPv4 net addresses.',
+    `thread`        BIGINT UNSIGNED NOT NULL,
+
+    `anon id`       CHAR(7) COMMENT 'This field is automatically computed by the database.\n
+                                    You should not fill in this field',
+
+    -- Il colore RGB sta su 3 byte, MEDIUMINT È 3 byte
+    `anon color`    MEDIUMINT UNSIGNED DEFAULT 0 NOT NULL
+                        COMMENT 'This field is automatically computed by the database.\n
+                        You should not fill in this field',
+
+    PRIMARY KEY (`net address`, `thread`),
+    UNIQUE KEY (`anon id`)
+
+    -- FOREIGN KEY (post) REFERENCES Post(id)
+);
+
+DELIMITER ;;
+
+CREATE TRIGGER `genera anon id`
+BEFORE INSERT ON `AnonUser` FOR EACH ROW
+m: BEGIN
+    DECLARE `charSet` CHAR(66) DEFAULT 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM091234567890!?';
+    DECLARE `newId` CHAR(7) DEFAULT '';
+    DECLARE i TINYINT UNSIGNED DEFAULT 0;
+
+    -- Se mi ànno passato un ID manualmente esco.
+    IF NEW.`anon id` IS NOT NULL THEN
+        LEAVE m;
+    END IF ;
+
+    -- Genero il color
+    SET NEW.`anon color` = FLOOR(RAND() * 16777215);
+
+    ancora: LOOP
+        -- Genero i 5 caratteri dello ID
+        SET i = 0;
+        SET `newId` = '';
+
+        WHILE i < 7 DO
+            SET `newId` = CONCAT(
+                newId,
+                SUBSTRING(charSet, RAND()*66 + 1, 1) -- Prendo un carattere a caso nel charSet
+            );
+
+            SET i = i + 1;
+        END WHILE ;
+
+        -- Se esiste un altro col medesimo ID nel thread esco
+        IF NOT EXISTS (
+            SELECT 1
+            FROM AnonUser AU
+            WHERE AU.thread = NEW.thread AND AU.`anon id` = newId
+        ) THEN
+            LEAVE ancora;
+        END IF ;
+    END LOOP ;
+
+    SET NEW.`anon id` = newId;
+END;;
+
+DELIMITER ;

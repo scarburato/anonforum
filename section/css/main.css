@@ -1,0 +1,19 @@
+/** Thread pinnato */
+.pinned-card {
+    background-color: #dcffd5;
+}
+
+.card-content p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 64px;
+}
+
+#keep-loading, #stop-loading {
+    padding: 10px 0;
+    text-align: center;
+}
+
+#controls {
+    margin: 4px 16px;
+}

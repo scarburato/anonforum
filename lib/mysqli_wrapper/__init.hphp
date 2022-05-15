@@ -1,0 +1,15 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dario
+ * Date: 01/02/18
+ * Time: 18.07
+ */
+
+namespace mysqli_wrapper;
+
+require_once dirname(__FILE__) . "/sql_exception.hphp";
+require_once dirname(__FILE__) . "/mysqli_connection_error.hphp";
+
+require_once dirname(__FILE__) . "/mysqli.hphp";
+require_once dirname(__FILE__) . "/mysqli_stmt.hphp";

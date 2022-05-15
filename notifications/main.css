@@ -1,0 +1,11 @@
+table{
+    border: none;
+}
+
+.notification:nth-child(even) {
+    background-color: #eeeeee;
+}
+
+.notification:nth-child(odd) {
+    background-color: #dbdbdb;
+}

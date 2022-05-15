@@ -1,0 +1,39 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: dario
+ * Date: 11/04/18
+ * Time: 16.07
+ */
+
+namespace mysqli_wrapper;
+
+use RuntimeException;
+use Throwable;
+
+/**
+ * Class sql_exception
+ * Eccezzione da lanciare ogni qualvota c'è un errore con la base di dati
+ * @package mysqli_wrapper
+ */
+class sql_exception extends RuntimeException
+{
+    private $error_list = [];
+
+    public function __construct(array $error_list, $errno = 0, Throwable $previus = null)
+    {
+        $this->error_list = $error_list;
+
+        parent::__construct($this->error_list[0]["error"], $errno, $previus);
+    }
+
+    public function getErrorList()
+    {
+        return $this->error_list;
+    }
+
+    public function getErrorListAsJson()
+    {
+        return json_encode($this->error_list, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+}

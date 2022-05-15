@@ -1,0 +1,282 @@
+@import "desktop.css" screen and (min-width: 30cm);
+@import "mobile.css" screen and (max-width: 30cm);
+@import "printer.css" print;
+
+@import "font_config.css";
+@import "section_list.css";
+@import "window.css";
+
+body {
+    margin: 0;
+}
+
+#title {
+    height: 2em;
+}
+
+.site-tile, #page-title {
+    display: inline;
+
+    text-decoration: none;
+    font-variant: small-caps;
+    color: black;
+    font-size: 1.3em;
+    font-weight: bolder;
+
+    margin: 0.67em 0;
+}
+#notificationButton{
+    display: none;
+    cursor: url("../asset/popout.png"), auto;
+}
+#notificationButton.ding {
+    background-color: orangered;
+}
+
+#sections_list {
+    height: 100%;
+}
+
+#content {
+    background-color: #eef2f5;
+    overflow: hidden;
+}
+
+#main {
+}
+
+#main p {
+    margin: 0;
+}
+
+p.error{
+    padding: 5px 10px;
+    border: solid red 2px;
+    background-color: rgba(255, 0, 0, 0.25);
+}
+
+/*****************************************************
+ Pulsanti e bottoni
+ */
+.button, button {
+    border-style: outset;
+    background-color: white;
+    border-color: #dbdbdb;
+    border-width: 1px;
+    color: #363636;
+    cursor: pointer;
+    justify-content: center;
+    padding: calc(0.5em - 1px) 1em;
+    text-align: center;
+    text-decoration: none;
+    font-size: calc(13px + 1px/3 );
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.button:hover, button:hover , .button.is-hovered, button.is-hovered {
+    background-color: #dbdbdb;
+    border-color: #b5b5b5;
+    color: #363636;
+}
+
+
+.button:focus, button:focus, .button.is-focused {
+    border-color: #3273dc;
+    color: #363636;
+}
+
+.button:active, button:active, .button.is-active {
+    border-color: #4a4a4a;
+    color: #363636;
+}
+
+.button.disabled, button[disabled],
+fieldset[disabled] .button {
+    cursor: not-allowed;
+
+    background-color: white;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+}
+
+/*****************************************
+ LA TESSERA
+ */
+.card {
+    background-color: whitesmoke;
+
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+
+    margin: 16px;
+}
+
+.card:first-child {
+    margin-top: 4px;
+}
+
+.card-header h2 {
+
+}
+
+.card-header, .card-content {
+    overflow: hidden;
+    padding-left: 56px;
+    padding-right: 56px;
+}
+
+.card-content {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.card-content p {
+    height: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/**
+ Ò preso card-footer da qui
+ https://github.com/jgthms/bulma/blob/3f2bf361e85d73338bcbae2094e972f37af23d47/css/bulma.css#L5707
+ */
+.card-footer {
+    background-color: transparent;
+    border-top: 1px solid lightgrey;
+    align-items: stretch;
+    display: flex;
+}
+
+.card-footer .item {
+    align-items: center;
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.card-footer .item:not(:last-child) {
+    border-right: 1px solid lightgrey;
+}
+
+.card-footer .is-link {
+    display: block; /* Rendo l'elemento A come un DIV */
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}
+
+.card-footer .is-link:hover {
+    background-color: #c2c2c2;
+}
+
+/***********************************************************
+                   TABELLE
+ **********************************************************/
+table {
+    width: 100%;
+    border: solid;
+}
+
+thead tr, thead th {
+    border: solid;
+    font-variant: small-caps;
+}
+
+table tr, table td {
+    border: solid 1px;
+}
+
+
+
+/*********************************************************
+                    PIÉ PAGINA
+ *********************************************************/
+#footer {
+    min-height: 100px;
+    overflow: hidden;
+
+    text-align: center;
+    padding: 25px;
+}
+
+#footer .legal-notice {
+    font-size: xx-small;
+}
+
+#footer .site-links {
+    padding-top: 5px;
+    font-size: x-small;
+}
+
+#footer .site-links a {
+    color: #3273dc;
+}
+
+/**************************************************
+
+ */
+
+.bbcode-raw p {
+    margin-bottom: 1em !important;
+}
+
+.bbcode-raw p:empty {
+    display: none;
+}
+
+.bbcode-raw * {
+    max-width: 100%;
+}
+
+/********************************************************
+
+ */
+#no-trend{
+    text-align: center;
+    text-transform: full-width;
+    color: black;
+}
+
+.trending-counter{
+    background-color: #00ff00;
+    font-family: "Ubuntu Mono", monospace;
+    border-radius: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-right: 8px;
+    cursor: default;
+}
+
+.trending-counter-icon {
+    margin-right: 2px;
+}
+
+form label *{
+    display: block;
+    width: 100%;
+}
+
+form label:not(:first-child){
+    display: block;
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+form input{
+    border: solid 1px;
+    border-radius: 0;
+}
+
+form input:focus{
+    border: solid 1px #3273dc;
+    border-radius: 0;
+}
+
+.lineHeight{
+    height: 1em;
+}
